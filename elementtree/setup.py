@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Setup script for the elementtree library
-# $Id: setup.py 2193 2004-12-05 18:03:00Z fredrik $
+# $Id: setup.py 2314 2005-03-02 18:56:50Z fredrik $
 #
 # Usage: python setup.py install
 #
@@ -25,7 +25,7 @@ converted to and from XML."""
 
 setup(
     name="elementtree",
-    version="1.2.4-20041228",
+    version="1.2.5-20050302",
     author="Fredrik Lundh",
     author_email="fredrik@pythonware.com",
     url="http://effbot.org/zone/element-index.htm",

@@ -1,6 +1,6 @@
 #
 # SimpleXMLWriter
-# $Id: SimpleXMLWriter.py 1862 2004-06-18 07:31:02Z Fredrik $
+# $Id: SimpleXMLWriter.py 2312 2005-03-02 18:13:39Z fredrik $
 #
 # a simple XML writer
 #
@@ -9,6 +9,8 @@
 # 2002-11-25 fl   fixed attribute encoding
 # 2002-12-02 fl   minor fixes for 1.5.2
 # 2004-06-17 fl   added pythondoc markup
+# 2004-07-23 fl   added flush method (from Jay Graves)
+# 2004-10-03 fl   added declaration method
 #
 # Copyright (c) 2001-2004 by Fredrik Lundh
 #
@@ -148,13 +150,18 @@ def escape_attrib(s, encoding=None, replace=string.replace):
 class XMLWriter:
 
     def __init__(self, file, encoding="us-ascii"):
+        if not hasattr(file, "write"):
+            file = open(file, "w")
         self.__write = file.write
+        if hasattr(file, "flush"):
+            self.flush = file.flush
         self.__open = 0 # true if start tag is open
         self.__tags = []
         self.__data = []
         self.__encoding = encoding
 
     def __flush(self):
+        # flush internal buffers
         if self.__open:
             self.__write(">")
             self.__open = 0
@@ -162,6 +169,16 @@ class XMLWriter:
             data = string.join(self.__data, "")
             self.__write(escape_cdata(data, self.__encoding))
             self.__data = []
+
+    ##
+    # Writes an XML declaration.
+
+    def declaration(self):
+        encoding = self.__encoding
+        if encoding == "us-ascii" or encoding == "utf-8":
+            self.__write("<?xml version='1.0'?>\n")
+        else:
+            self.__write("<?xml version='1.0' encoding='%s'?>\n" % encoding)
 
     ##
     # Opens a new element.  Attributes can be given as keyword
@@ -254,3 +271,9 @@ class XMLWriter:
         if text:
             self.data(text)
         self.end()
+
+    ##
+    # Flushes the output stream.
+
+    def flush(self):
+        pass # replaced by the constructor
