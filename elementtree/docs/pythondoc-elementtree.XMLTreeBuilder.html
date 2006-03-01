@@ -33,8 +33,9 @@ new elements.</p>
 <dt><a id='elementtree.XMLTreeBuilder.FancyTreeBuilder.end-method' name='elementtree.XMLTreeBuilder.FancyTreeBuilder.end-method'><b>end(element)</b></a> [<a href='#elementtree.XMLTreeBuilder.FancyTreeBuilder.end-method'>#</a>]</dt>
 <dd>
 <p>Hook method that's called when a new element has been closed.
-May access the 'namespaces' attribute.</p>
-<dl>
+May access the <b>namespaces</b> attribute.
+
+</p><dl>
 <dt><i>element</i></dt>
 <dd>
 The new element.</dd>
@@ -43,11 +44,14 @@ The new element.</dd>
 <dt><a id='elementtree.XMLTreeBuilder.FancyTreeBuilder.start-method' name='elementtree.XMLTreeBuilder.FancyTreeBuilder.start-method'><b>start(element)</b></a> [<a href='#elementtree.XMLTreeBuilder.FancyTreeBuilder.start-method'>#</a>]</dt>
 <dd>
 <p>Hook method that's called when a new element has been opened.
-May access the 'namespaces' attribute.</p>
-<dl>
+May access the <b>namespaces</b> attribute.
+
+</p><dl>
 <dt><i>element</i></dt>
 <dd>
-The new element.</dd>
+The new element.  The tag name and attributes are,
+    set, but it has no children, and the text and tail attributes
+    are still empty.</dd>
 </dl><br />
 </dd>
 </dl>

@@ -1,6 +1,6 @@
 #
 # ElementTree
-# $Id: ElementTree.py 1862 2004-06-18 07:31:02Z Fredrik $
+# $Id: ElementTree.py 2144 2004-10-09 12:41:29Z fredrik $
 #
 # light-weight XML support for Python 1.5.2 and later.
 #
@@ -38,6 +38,7 @@
 # 2004-03-28 fl   added XMLID helper
 # 2004-06-02 fl   added default support to findtext
 # 2004-06-08 fl   fixed encoding of non-ascii element/attribute names
+# 2004-08-23 fl   take advantage of post-2.1 expat features
 #
 # Copyright (c) 1999-2004 by Fredrik Lundh.  All rights reserved.
 #
@@ -1025,16 +1026,34 @@ class TreeBuilder:
 class XMLTreeBuilder:
 
     def __init__(self, html=0, target=None):
-        from xml.parsers import expat
+        try:
+            from xml.parsers import expat
+        except ImportError:
+            raise ImportError(
+                "No module named expat; use SimpleXMLTreeBuilder instead"
+                )
         self._parser = parser = expat.ParserCreate(None, "}")
         if target is None:
             target = TreeBuilder()
         self._target = target
         self._names = {} # name memo cache
+        # callbacks
         parser.DefaultHandler = self._default
         parser.StartElementHandler = self._start
         parser.EndElementHandler = self._end
         parser.CharacterDataHandler = self._data
+        # let expat do the buffering, if supported
+        try:
+            self._parser.buffer_text = 1
+        except AttributeError:
+            pass
+        # use new-style attribute handling, if supported
+        try:
+            self._parser.ordered_attributes = 1
+            self._parser.specified_attributes = 1
+            parser.StartElementHandler = self._start_list
+        except AttributeError:
+            pass
         encoding = None
         if not parser.returns_unicode:
             encoding = "utf-8"
@@ -1066,6 +1085,15 @@ class XMLTreeBuilder:
         attrib = {}
         for key, value in attrib_in.items():
             attrib[fixname(key)] = self._fixtext(value)
+        return self._target.start(tag, attrib)
+
+    def _start_list(self, tag, attrib_in):
+        fixname = self._fixname
+        tag = fixname(tag)
+        attrib = {}
+        if attrib_in:
+            for i in range(0, len(attrib_in), 2):
+                attrib[fixname(attrib_in[i])] = self._fixtext(attrib_in[i+1])
         return self._target.start(tag, attrib)
 
     def _data(self, text):

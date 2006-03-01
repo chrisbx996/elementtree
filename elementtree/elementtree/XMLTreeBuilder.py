@@ -1,6 +1,6 @@
 #
 # ElementTree
-# $Id: XMLTreeBuilder.py 1862 2004-06-18 07:31:02Z Fredrik $
+# $Id: XMLTreeBuilder.py 2193 2004-12-05 18:03:00Z fredrik $
 #
 # an XML tree builder
 #
@@ -70,14 +70,16 @@ class FancyTreeBuilder(TreeBuilder):
 
     def __init__(self, html=0):
         TreeBuilder.__init__(self, html)
-        self._parser.StartElementHandler = self._start
-        self._parser.EndElementHandler = self._end
         self._parser.StartNamespaceDeclHandler = self._start_ns
         self._parser.EndNamespaceDeclHandler = self._end_ns
         self.namespaces = []
 
     def _start(self, tag, attrib_in):
         elem = TreeBuilder._start(self, tag, attrib_in)
+        self.start(elem)
+
+    def _start_list(self, tag, attrib_in):
+        elem = TreeBuilder._start_list(self, tag, attrib_in)
         self.start(elem)
 
     def _end(self, tag):
@@ -92,16 +94,18 @@ class FancyTreeBuilder(TreeBuilder):
 
     ##
     # Hook method that's called when a new element has been opened.
-    # May access the 'namespaces' attribute.
+    # May access the <b>namespaces</b> attribute.
     #
-    # @param element The new element.
+    # @param element The new element.  The tag name and attributes are,
+    #     set, but it has no children, and the text and tail attributes
+    #     are still empty.
 
     def start(self, element):
         pass
 
     ##
     # Hook method that's called when a new element has been closed.
-    # May access the 'namespaces' attribute.
+    # May access the <b>namespaces</b> attribute.
     #
     # @param element The new element.
 
