@@ -1,6 +1,6 @@
 #
 # ElementTree
-# $Id: HTMLTreeBuilder.py 2191 2004-12-05 11:41:33Z fredrik $
+# $Id: HTMLTreeBuilder.py 2325 2005-03-16 15:50:43Z fredrik $
 #
 # a simple tree builder, for HTML input
 #
@@ -56,7 +56,7 @@ import mimetools, StringIO
 import ElementTree
 
 AUTOCLOSE = "p", "li", "tr", "th", "td", "head", "body"
-IGNOREEND = "img", "hr", "meta", "link"
+IGNOREEND = "img", "hr", "meta", "link", "br"
 
 if sys.version[:3] == "1.5":
     is_not_ascii = re.compile(r"[\x80-\xff]").search # 1.5.2

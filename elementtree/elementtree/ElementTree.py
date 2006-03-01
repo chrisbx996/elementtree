@@ -1,6 +1,6 @@
 #
 # ElementTree
-# $Id: ElementTree.py 2314 2005-03-02 18:56:50Z fredrik $
+# $Id: ElementTree.py 2326 2005-03-17 07:45:21Z fredrik $
 #
 # light-weight XML support for Python 1.5.2 and later.
 #
@@ -138,7 +138,7 @@ except ImportError:
 # TODO: add support for custom namespace resolvers/default namespaces
 # TODO: add improved support for incremental parsing
 
-VERSION = "1.2"
+VERSION = "1.2.6"
 
 ##
 # Internal element class.  This class defines the Element interface,
@@ -1120,7 +1120,7 @@ class XMLTreeBuilder:
         self._target = target
         self._names = {} # name memo cache
         # callbacks
-        parser.DefaultHandler = self._default
+        parser.DefaultHandlerExpand = self._default
         parser.StartElementHandler = self._start
         parser.EndElementHandler = self._end
         parser.CharacterDataHandler = self._data
@@ -1146,7 +1146,7 @@ class XMLTreeBuilder:
     def _fixtext(self, text):
         # convert text string to ascii, if possible
         try:
-            return str(text) # what if the default encoding is changed?
+            return _encode(text, "ascii")
         except UnicodeError:
             return text
 
