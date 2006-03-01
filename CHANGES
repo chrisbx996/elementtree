@@ -1,7 +1,15 @@
 The ElementTree Library
-$Id: CHANGES 2311 2005-03-02 18:10:44Z fredrik $
+$Id: CHANGES 2326 2005-03-17 07:45:21Z fredrik $
 
 *** Changes from release 1.1 to 1.2 ***
+
+(1.2.6 released)
+
+- Fixed handling of entities defined in internal DTD's (reported
+  by Greg Wilson).
+
+- Fixed serialization under non-standard default encodings (but
+  using non-standard default encodings is still a lousy idea ;-)
 
 (1.2.5 released)
 

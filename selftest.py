@@ -1,4 +1,4 @@
-# $Id: selftest.py 2311 2005-03-02 18:10:44Z fredrik $
+# $Id: selftest.py 2326 2005-03-17 07:45:21Z fredrik $
 # -*- coding: iso-8859-1 -*-
 # elementtree selftest program
 
@@ -107,6 +107,12 @@ def sanity():
     >>> from elementtree.SimpleXMLWriter import *
     >>> from elementtree.TidyTools import *
     >>> from elementtree.XMLTreeBuilder import *
+    """
+
+def version():
+    """
+    >>> ElementTree.VERSION
+    '1.2.6'
     """
 
 def interface():
@@ -960,6 +966,35 @@ def bug_xmltoolkit45():
     >>> serialize(p.close())
     '<p>&#8221;v&#228;lue&#8221;</p>'
 
+    """
+
+def bug_xmltoolkit46():
+    """
+    problems parsing open BR tags
+
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<p>key<br>value</p>")
+    >>> serialize(p.close())
+    '<p>key<br />value</p>'
+
+    """
+
+def bug_xmltoolkit54():
+    """
+    problems handling internally defined entities
+
+    >>> e = ElementTree.XML("<!DOCTYPE doc [<!ENTITY ldots '&#x8230;'>]><doc>&ldots;</doc>")
+    >>> serialize(e)
+    '<doc>&#33328;</doc>'
+    """
+
+def bug_xmltoolkit55():
+    """
+    make sure we're reporting the first error, not the last
+
+    >>> e = ElementTree.XML("<!DOCTYPE doc SYSTEM 'doc.dtd'><doc>&ldots;&ndots;&rdots;</doc>")
+    Traceback (most recent call last):
+    ExpatError: undefined entity &ldots;: line 1, column 36
     """
 
 # --------------------------------------------------------------------
