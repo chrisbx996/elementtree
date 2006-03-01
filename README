@@ -1,4 +1,4 @@
-$Id: README 1864 2004-06-18 13:11:12Z Fredrik $
+$Id: README 2193 2004-12-05 18:03:00Z fredrik $
 
 =======================
 The elementtree library
@@ -52,7 +52,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 release info
 ------------
 
-This is release 1.2 of the ElementTree library.
+This is release 1.2.3 of the ElementTree library.
 
 For a list of changes in this release, see the CHANGES document.
 

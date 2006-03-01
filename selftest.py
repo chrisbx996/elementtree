@@ -1,4 +1,4 @@
-# $Id: selftest.py 1845 2004-06-10 06:19:43Z fredrik $
+# $Id: selftest.py 2193 2004-12-05 18:03:00Z fredrik $
 # -*- coding: iso-8859-1 -*-
 # elementtree selftest program
 
@@ -301,6 +301,40 @@ def simpleparsefile():
        <element>text</element>tail
        <empty-element />
     </root>
+    """
+
+def fancyparsefile():
+    """
+    Test the "fancy" parser.
+
+    Sanity check.
+    >>> from elementtree import XMLTreeBuilder
+    >>> parser = XMLTreeBuilder.FancyTreeBuilder()
+    >>> tree = ElementTree.parse("samples/simple.xml", parser)
+    >>> normalize_crlf(tree)
+    >>> tree.write(sys.stdout)
+    <root>
+       <element key="value">text</element>
+       <element>text</element>tail
+       <empty-element />
+    </root>
+
+    Callback check.
+    >>> class MyFancyParser(XMLTreeBuilder.FancyTreeBuilder):
+    ...     def start(self, elem):
+    ...         print "START", elem.tag
+    ...     def end(self, elem):
+    ...         print "END", elem.tag
+    >>> parser = MyFancyParser()
+    >>> tree = ElementTree.parse("samples/simple.xml", parser)
+    START root
+    START element
+    END element
+    START element
+    END element
+    START empty-element
+    END empty-element
+    END root
     """
 
 def writefile():
@@ -811,6 +845,54 @@ def bug_xmltoolkit39():
     >>> tree.set(u"ättr", u"välue")
     >>> ElementTree.tostring(tree, "utf-8")
     '<tag \\xc3\\xa4ttr="v\\xc3\\xa4lue" />'
+
+    """
+
+def bug_xmltoolkit45():
+    """
+    problems parsing mixed unicode/non-ascii html documents
+
+    latin-1 text
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<p>välue</p>")
+    >>> serialize(p.close())
+    '<p>v&#228;lue</p>'
+
+    utf-8 text
+    >>> p = HTMLTreeBuilder.TreeBuilder(encoding="utf-8")
+    >>> p.feed("<p>v\xc3\xa4lue</p>")
+    >>> serialize(p.close())
+    '<p>v&#228;lue</p>'
+
+    utf-8 text using meta tag
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<html><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><p>v\xc3\xa4lue</p></html>")
+    >>> serialize(p.close().find("p"))
+    '<p>v&#228;lue</p>'
+
+    latin-1 character references
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<p>v&#228;lue</p>")
+    >>> serialize(p.close())
+    '<p>v&#228;lue</p>'
+
+    latin-1 character entities
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<p>v&auml;lue</p>")
+    >>> serialize(p.close())
+    '<p>v&#228;lue</p>'
+
+    mixed latin-1 text and unicode entities
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<p>&#8221;välue&#8221;</p>")
+    >>> serialize(p.close())
+    '<p>&#8221;v&#228;lue&#8221;</p>'
+
+    mixed unicode and latin-1 entities
+    >>> p = HTMLTreeBuilder.TreeBuilder()
+    >>> p.feed("<p>&#8221;v&auml;lue&#8221;</p>")
+    >>> serialize(p.close())
+    '<p>&#8221;v&#228;lue&#8221;</p>'
 
     """
 
