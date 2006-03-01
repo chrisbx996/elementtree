@@ -1,4 +1,4 @@
-# $Id: selftest.py 2193 2004-12-05 18:03:00Z fredrik $
+# $Id: selftest.py 2311 2005-03-02 18:10:44Z fredrik $
 # -*- coding: iso-8859-1 -*-
 # elementtree selftest program
 
@@ -105,7 +105,6 @@ def sanity():
     >>> from elementtree.HTMLTreeBuilder import *
     >>> from elementtree.SimpleXMLTreeBuilder import *
     >>> from elementtree.SimpleXMLWriter import *
-    >>> from elementtree.TidyHTMLTreeBuilder import *
     >>> from elementtree.TidyTools import *
     >>> from elementtree.XMLTreeBuilder import *
     """
@@ -301,6 +300,73 @@ def simpleparsefile():
        <element>text</element>tail
        <empty-element />
     </root>
+    """
+
+def iterparse():
+    """
+    Test iterparse interface.
+
+    >>> iterparse = ElementTree.iterparse
+
+    >>> context = iterparse("samples/simple.xml")
+    >>> for action, elem in context:
+    ...   print action, elem.tag
+    end element
+    end element
+    end empty-element
+    end root
+    >>> context.root.tag
+    'root'
+
+    >>> context = iterparse("samples/simple-ns.xml")
+    >>> for action, elem in context:
+    ...   print action, elem.tag
+    end {namespace}element
+    end {namespace}element
+    end {namespace}empty-element
+    end {namespace}root
+
+    >>> events = ()
+    >>> context = iterparse("samples/simple.xml", events)
+    >>> for action, elem in context:
+    ...   print action, elem.tag
+
+    >>> events = ()
+    >>> context = iterparse("samples/simple.xml", events=events)
+    >>> for action, elem in context:
+    ...   print action, elem.tag
+
+    >>> events = ("start", "end")
+    >>> context = iterparse("samples/simple.xml", events)
+    >>> for action, elem in context:
+    ...   print action, elem.tag
+    start root
+    start element
+    end element
+    start element
+    end element
+    start empty-element
+    end empty-element
+    end root
+
+    >>> events = ("start", "end", "start-ns", "end-ns")
+    >>> context = iterparse("samples/simple-ns.xml", events)
+    >>> for action, elem in context:
+    ...   if action in ("start", "end"):
+    ...     print action, elem.tag
+    ...   else:
+    ...     print action, elem
+    start-ns ('', 'namespace')
+    start {namespace}root
+    start {namespace}element
+    end {namespace}element
+    start {namespace}element
+    end {namespace}element
+    start {namespace}empty-element
+    end {namespace}empty-element
+    end {namespace}root
+    end-ns None
+
     """
 
 def fancyparsefile():

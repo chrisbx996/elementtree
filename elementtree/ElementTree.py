@@ -1,16 +1,8 @@
 #
 # ElementTree
-# $Id: ElementTree.py 2144 2004-10-09 12:41:29Z fredrik $
+# $Id: ElementTree.py 2314 2005-03-02 18:56:50Z fredrik $
 #
 # light-weight XML support for Python 1.5.2 and later.
-#
-# this is a stripped-down version of Secret Labs' effDOM library (part
-# of xmlToolkit).  compared to effDOM, this implementation has:
-#
-# - no support for observers
-# - no html-specific extensions (e.g. entity preload)
-# - no custom entities, doctypes, etc
-# - no accelerator module
 #
 # history:
 # 2001-10-20 fl   created (from various sources)
@@ -39,8 +31,10 @@
 # 2004-06-02 fl   added default support to findtext
 # 2004-06-08 fl   fixed encoding of non-ascii element/attribute names
 # 2004-08-23 fl   take advantage of post-2.1 expat features
+# 2005-02-01 fl   added iterparse implementation
+# 2005-03-02 fl   fixed iterparse support for pre-2.2 versions
 #
-# Copyright (c) 1999-2004 by Fredrik Lundh.  All rights reserved.
+# Copyright (c) 1999-2005 by Fredrik Lundh.  All rights reserved.
 #
 # fredrik@pythonware.com
 # http://www.pythonware.com
@@ -48,7 +42,7 @@
 # --------------------------------------------------------------------
 # The ElementTree toolkit is
 #
-# Copyright (c) 1999-2004 by Fredrik Lundh
+# Copyright (c) 1999-2005 by Fredrik Lundh
 #
 # By obtaining, using, and/or copying this software and/or its
 # associated documentation, you agree that you have read, understood,
@@ -79,7 +73,7 @@ __all__ = [
     "dump",
     "Element", "ElementTree",
     "fromstring",
-    "iselement",
+    "iselement", "iterparse",
     "parse",
     "PI", "ProcessingInstruction",
     "QName",
@@ -702,7 +696,7 @@ class ElementTree:
                 for k, v in xmlns_items:
                     file.write(" %s=\"%s\"" % (_encode(k, encoding),
                                                _escape_attrib(v, encoding)))
-            if node.text or node:
+            if node.text or len(node):
                 file.write(">")
                 if node.text:
                     file.write(_escape_cdata(node.text, encoding))
@@ -864,6 +858,94 @@ def parse(source, parser=None):
     tree = ElementTree()
     tree.parse(source, parser)
     return tree
+
+##
+# Parses an XML document into an element tree incrementally, and reports
+# what's going on to the user.
+#
+# @param source A filename or file object containing XML data.
+# @param events A list of events to report back.  If omitted, only "end"
+#     events are reported.
+# @return A (event, elem) iterator.
+
+class iterparse:
+
+    def __init__(self, source, events=None):
+        if not hasattr(source, "read"):
+            source = open(source, "rb")
+        self._file = source
+        self._events = []
+        self._index = 0
+        self.root = self._root = None
+        self._parser = XMLTreeBuilder()
+        # wire up the parser for event reporting
+        parser = self._parser._parser
+        append = self._events.append
+        if events is None:
+            events = ["end"]
+        for event in events:
+            if event == "start":
+                try:
+                    parser.ordered_attributes = 1
+                    parser.specified_attributes = 1
+                    def handler(tag, attrib_in, event=event, append=append,
+                                start=self._parser._start_list):
+                        append((event, start(tag, attrib_in)))
+                    parser.StartElementHandler = handler
+                except AttributeError:
+                    def handler(tag, attrib_in, event=event, append=append,
+                                start=self._parser._start):
+                        append((event, start(tag, attrib_in)))
+                    parser.StartElementHandler = handler
+            elif event == "end":
+                def handler(tag, event=event, append=append,
+                            end=self._parser._end):
+                    append((event, end(tag)))
+                parser.EndElementHandler = handler
+            elif event == "start-ns":
+                def handler(prefix, uri, event=event, append=append):
+                    try:
+                        uri = _encode(uri, "ascii")
+                    except UnicodeError:
+                        pass
+                    append((event, (prefix or "", uri)))
+                parser.StartNamespaceDeclHandler = handler
+            elif event == "end-ns":
+                def handler(prefix, event=event, append=append):
+                    append((event, None))
+                parser.EndNamespaceDeclHandler = handler
+
+    def next(self):
+        while 1:
+            try:
+                item = self._events[self._index]
+            except IndexError:
+                if self._parser is None:
+                    self.root = self._root
+                    try:
+                        raise StopIteration
+                    except NameError:
+                        raise IndexError
+                # load event buffer
+                del self._events[:]
+                self._index = 0
+                data = self._file.read(16384)
+                if data:
+                    self._parser.feed(data)
+                else:
+                    self._root = self._parser.close()
+                    self._parser = None
+            else:
+                self._index = self._index + 1
+                return item
+
+    try:
+        iter
+        def __iter__(self):
+            return self
+    except NameError:
+        def __getitem__(self, index):
+            return self.next()
 
 ##
 # Parses an XML document from a string constant.  This function can

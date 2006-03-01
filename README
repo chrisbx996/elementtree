@@ -1,4 +1,4 @@
-$Id: README 2193 2004-12-05 18:03:00Z fredrik $
+$Id: README 2314 2005-03-02 18:56:50Z fredrik $
 
 =======================
 The elementtree library
@@ -24,8 +24,8 @@ http://www.pythonware.com
 --------------------------------------------------------------------
 The ElementTree Library is
 
-Copyright (c) 1999-2004 by Secret Labs AB
-Copyright (c) 1999-2004 by Fredrik Lundh
+Copyright (c) 1999-2005 by Secret Labs AB
+Copyright (c) 1999-2005 by Fredrik Lundh
 
 By obtaining, using, and/or copying this software and/or its
 associated documentation, you agree that you have read, understood,
@@ -52,7 +52,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 release info
 ------------
 
-This is release 1.2.3 of the ElementTree library.
+This is release 1.2.5 of the ElementTree library.
 
 For a list of changes in this release, see the CHANGES document.
 
@@ -124,7 +124,7 @@ docs/*
 demo*.py                      Sample scripts
 samples/*                     Sample data
 
-selftest.py                   Selftest (requires Python 2.1)
+selftest.py                   Selftest (requires Python 2.1 or later)
 tidytest.py                   Selftest for TidyHTMLTreeBuilder components.
 
 benchmark.py                  Benchmark script (usage: benchmark.py file)

@@ -1,6 +1,6 @@
 #
 # ElementTree
-# $Id: XMLTreeBuilder.py 2193 2004-12-05 18:03:00Z fredrik $
+# $Id: XMLTreeBuilder.py 2305 2005-03-01 17:43:09Z fredrik $
 #
 # an XML tree builder
 #
