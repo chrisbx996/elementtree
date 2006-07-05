@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: elementtree
-Version: 1.2.6-20050316
+Version: 1.3a1-20060705
 Summary: ElementTree - a light-weight XML object model for Python.
 Home-page: http://effbot.org/zone/element-index.htm
 Author: Fredrik Lundh
