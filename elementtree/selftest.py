@@ -1,4 +1,4 @@
-# $Id: selftest.py 2326 2005-03-17 07:45:21Z fredrik $
+# $Id: selftest.py 2769 2006-07-05 20:14:58Z fredrik $
 # -*- coding: iso-8859-1 -*-
 # elementtree selftest program
 
@@ -112,7 +112,7 @@ def sanity():
 def version():
     """
     >>> ElementTree.VERSION
-    '1.2.6'
+    '1.3a1'
     """
 
 def interface():
@@ -123,6 +123,28 @@ def interface():
     >>> check_element(element)
     >>> tree = ElementTree.ElementTree(element)
     >>> check_element_tree(tree)
+    """
+
+def simpleops():
+    """
+    >>> elem = ElementTree.XML("<body><tag/></body>")
+    >>> serialize(elem)
+    '<body><tag /></body>'
+    >>> e = ElementTree.Element("tag2")
+    >>> elem.append(e)
+    >>> serialize(elem)
+    '<body><tag /><tag2 /></body>'
+    >>> elem.remove(e)
+    >>> serialize(elem)
+    '<body><tag /></body>'
+    >>> elem.insert(0, e)
+    >>> serialize(elem)
+    '<body><tag2 /><tag /></body>'
+    >>> elem.remove(e)
+    >>> elem.extend([e])
+    >>> serialize(elem)
+    '<body><tag /><tag2 /></body>'
+    >>> elem.remove(e)
     """
 
 def simplefind():
@@ -277,7 +299,13 @@ def parseliteral():
     >>> element = ElementTree.fromstring("<html><body>text</body></html>")
     >>> ElementTree.ElementTree(element).write(sys.stdout)
     <html><body>text</body></html>
+    >>> sequence = ["<html><body>", "text</bo", "dy></html>"]
+    >>> element = ElementTree.fromstringlist(sequence)
+    >>> ElementTree.ElementTree(element).write(sys.stdout)
+    <html><body>text</body></html>
     >>> print ElementTree.tostring(element)
+    <html><body>text</body></html>
+    >>> print "".join(ElementTree.tostringlist(element))
     <html><body>text</body></html>
     >>> print ElementTree.tostring(element, "ascii")
     <?xml version='1.0' encoding='ascii'?>
