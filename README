@@ -1,4 +1,4 @@
-$Id: README 2923 2006-11-19 08:05:45Z fredrik $
+$Id: README 3234 2007-08-30 17:47:47Z fredrik $
 
 =======================
 The elementtree library
@@ -26,8 +26,8 @@ http://www.pythonware.com
 --------------------------------------------------------------------
 The ElementTree Library is
 
-Copyright (c) 1999-2006 by Secret Labs AB
-Copyright (c) 1999-2006 by Fredrik Lundh
+Copyright (c) 1999-2007 by Secret Labs AB
+Copyright (c) 1999-2007 by Fredrik Lundh
 
 By obtaining, using, and/or copying this software and/or its
 associated documentation, you agree that you have read, understood,
