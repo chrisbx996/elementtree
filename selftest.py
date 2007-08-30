@@ -1,4 +1,4 @@
-# $Id: selftest.py 2769 2006-07-05 20:14:58Z fredrik $
+# $Id: selftest.py 3227 2007-08-27 22:21:41Z fredrik $
 # -*- coding: iso-8859-1 -*-
 # elementtree selftest program
 
@@ -103,16 +103,14 @@ def sanity():
     >>> from elementtree.ElementInclude import *
     >>> from elementtree.ElementPath import *
     >>> from elementtree.HTMLTreeBuilder import *
-    >>> from elementtree.SimpleXMLTreeBuilder import *
     >>> from elementtree.SimpleXMLWriter import *
     >>> from elementtree.TidyTools import *
-    >>> from elementtree.XMLTreeBuilder import *
     """
 
 def version():
     """
     >>> ElementTree.VERSION
-    '1.3a1'
+    '1.3a2'
     """
 
 def interface():
@@ -234,9 +232,13 @@ def find():
     ['tag', 'tag', 'tag']
     >>> summarize_list(elem.findall("././tag"))
     ['tag', 'tag']
-    >>> summarize_list(ElementTree.ElementTree(elem).findall("/tag"))
-    ['tag', 'tag']
     >>> summarize_list(ElementTree.ElementTree(elem).findall("./tag"))
+    ['tag', 'tag']
+
+    FIXME: ET's Path module handles this case incorrectly; this gives
+    a warning in 1.3, and the behaviour will be modified in 1.4.
+
+    >>> summarize_list(ElementTree.ElementTree(elem).findall("/tag"))
     ['tag', 'tag']
     """
 
@@ -320,22 +322,6 @@ def parseliteral():
     'body'
     """
 
-def simpleparsefile():
-    """
-    Test the xmllib-based parser.
-
-    >>> from elementtree import SimpleXMLTreeBuilder
-    >>> parser = SimpleXMLTreeBuilder.TreeBuilder()
-    >>> tree = ElementTree.parse("samples/simple.xml", parser)
-    >>> normalize_crlf(tree)
-    >>> tree.write(sys.stdout)
-    <root>
-       <element key="value">text</element>
-       <element>text</element>tail
-       <empty-element />
-    </root>
-    """
-
 def iterparse():
     """
     Test iterparse interface.
@@ -403,40 +389,6 @@ def iterparse():
 
     """
 
-def fancyparsefile():
-    """
-    Test the "fancy" parser.
-
-    Sanity check.
-    >>> from elementtree import XMLTreeBuilder
-    >>> parser = XMLTreeBuilder.FancyTreeBuilder()
-    >>> tree = ElementTree.parse("samples/simple.xml", parser)
-    >>> normalize_crlf(tree)
-    >>> tree.write(sys.stdout)
-    <root>
-       <element key="value">text</element>
-       <element>text</element>tail
-       <empty-element />
-    </root>
-
-    Callback check.
-    >>> class MyFancyParser(XMLTreeBuilder.FancyTreeBuilder):
-    ...     def start(self, elem):
-    ...         print "START", elem.tag
-    ...     def end(self, elem):
-    ...         print "END", elem.tag
-    >>> parser = MyFancyParser()
-    >>> tree = ElementTree.parse("samples/simple.xml", parser)
-    START root
-    START element
-    END element
-    START element
-    END element
-    START empty-element
-    END empty-element
-    END root
-    """
-
 def writefile():
     """
     >>> elem = ElementTree.Element("tag")
@@ -446,6 +398,11 @@ def writefile():
     >>> ElementTree.SubElement(elem, "subtag").text = "subtext"
     >>> serialize(elem)
     '<tag>text<subtag>subtext</subtag></tag>'
+
+    Test tag suppression
+    >>> elem.tag = None
+    >>> serialize(elem)
+    'text<subtag>subtext</subtag>'
     """
 
 def writestring():
@@ -486,13 +443,13 @@ def encoding():
     >>> elem.attrib["key"] = "<&\"\'>"
     >>> elem.text = None
     >>> serialize(elem)
-    '<tag key="&lt;&amp;&quot;&apos;&gt;" />'
+    '<tag key="&lt;&amp;&quot;\'&gt;" />'
     >>> serialize(elem, "utf-8")
-    '<tag key="&lt;&amp;&quot;&apos;&gt;" />'
+    '<tag key="&lt;&amp;&quot;\'&gt;" />'
     >>> serialize(elem, "us-ascii")
-    '<tag key="&lt;&amp;&quot;&apos;&gt;" />'
+    '<tag key="&lt;&amp;&quot;\'&gt;" />'
     >>> serialize(elem, "iso-8859-1")
-    '<?xml version=\'1.0\' encoding=\'iso-8859-1\'?>\n<tag key="&lt;&amp;&quot;&apos;&gt;" />'
+    '<?xml version=\'1.0\' encoding=\'iso-8859-1\'?>\n<tag key="&lt;&amp;&quot;\'&gt;" />'
 
     >>> elem.text = u'\xe5\xf6\xf6<>'
     >>> elem.attrib.clear()
@@ -534,11 +491,11 @@ def entity():
 
     >>> ElementTree.XML("<document>&entity;</document>")
     Traceback (most recent call last):
-    ExpatError: undefined entity: line 1, column 10
+    ParseError: undefined entity: line 1, column 10
 
     >>> ElementTree.XML(ENTITY_XML)
     Traceback (most recent call last):
-    ExpatError: undefined entity &entity;: line 5, column 10
+    ParseError: undefined entity &entity;: line 5, column 10
 
     (add more tests here)
 
@@ -619,7 +576,7 @@ def qname():
     >>> elem.append(subelem)
     >>> elem.append(subelem)
     >>> serialize(elem) # 3.3
-    '<ns0:tag xmlns:ns0="uri"><tag ns1:key="ns2:value" xmlns:ns1="uri1" xmlns:ns2="uri2" /><tag ns1:key="ns2:value" xmlns:ns1="uri1" xmlns:ns2="uri2" /></ns0:tag>'
+    '<ns0:tag xmlns:ns0="uri" xmlns:ns1="uri1" xmlns:ns2="uri2"><tag ns1:key="ns2:value" /><tag ns1:key="ns2:value" /></ns0:tag>'
 
     """
 
@@ -1022,7 +979,35 @@ def bug_xmltoolkit55():
 
     >>> e = ElementTree.XML("<!DOCTYPE doc SYSTEM 'doc.dtd'><doc>&ldots;&ndots;&rdots;</doc>")
     Traceback (most recent call last):
-    ExpatError: undefined entity &ldots;: line 1, column 36
+    ParseError: undefined entity &ldots;: line 1, column 36
+    """
+
+def bug_200708_version():
+    """
+    >>> parser = ElementTree.XMLParser()
+    >>> parser.version
+    'Expat 2.0.0'
+    >>> parser.feed(open("samples/simple.xml").read())
+    >>> print serialize(parser.close())
+    <root>
+       <element key="value">text</element>
+       <element>text</element>tail
+       <empty-element />
+    </root>
+    """
+
+def bug_200708_newline():
+    r"""
+
+    Preserve newlines in attributes.
+    >>> ET = ElementTree
+    >>> e = ET.Element('SomeTag', text="def _f():\n  return 3\n")
+    >>> ET.tostring(e)
+    '<SomeTag text="def _f():&#10;  return 3&#10;" />'
+    >>> ET.XML(ET.tostring(e)).get("text")
+    'def _f():\n  return 3\n'
+    >>> ET.tostring(ET.XML(ET.tostring(e)))
+    '<SomeTag text="def _f():&#10;  return 3&#10;" />'
     """
 
 # --------------------------------------------------------------------

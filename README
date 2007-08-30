@@ -1,4 +1,4 @@
-$Id: README 2768 2006-07-05 19:49:29Z fredrik $
+$Id: README 3215 2007-08-26 19:13:50Z fredrik $
 
 =======================
 The elementtree library
@@ -24,7 +24,7 @@ http://www.pythonware.com
 release info
 --------------------------------------------------------------------
 
-This is release 1.3 alpha 1 of the ElementTree library.
+This is release 1.3 alpha 2 of the ElementTree library.
 
 For a list of changes in this release, see the CHANGES document.
 
@@ -63,25 +63,10 @@ elementtree/
                               HTML at least as good as your browser, use
                               TidyHTMLTreeBuilder or TidyTools (see below).
 
-  XMLTreeBuilder.py           Element tree builder for XML (compatibility;
-                              new code should use the tree builder in the
-                              ElementTree module).
-
   TidyHTMLTreeBuilder.py      Element tree builder for HTML, based on the
                               tidylib library.  This tree builder requires
                               the _elementtidy extension module (available
                               from http://effbot.org/downloads).
-
-  SimpleXMLTreeBuilder.py     Old element tree builder for XML, based on
-                              xmllib, for Python versions where "expat" is
-                              not available.   Due to bugs in xmllib, the
-                              namespace support is not reliable (run the
-                              module as a script to find out exactly how
-                              unreliable it is on your Python version...)
-
-  SgmlopXMLTreeBuilder.py     Simple element tree builder based on the
-                              SGMLOP parser.  Note: The current version
-                              does not support namespaces.
 
   SimpleXMLWriter.py          Simple XML writer
 

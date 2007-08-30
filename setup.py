@@ -25,7 +25,7 @@ converted to and from XML."""
 
 setup(
     name="elementtree",
-    version="1.3a1-20060705",
+    version="1.3a2-20070827-preview",
     author="Fredrik Lundh",
     author_email="fredrik@pythonware.com",
     url="http://effbot.org/zone/element-index.htm",
