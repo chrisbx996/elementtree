@@ -1,60 +1,18 @@
 The ElementTree Library
-$Id: CHANGES 3227 2007-08-27 22:21:41Z fredrik $
-
-*** Changes from release 1.2 to 1.3 ***
-
-- Raise ET.ParseError for XML errors found by the parser, no matter
-  that the error actually was.  ParseError is a subclass of Syntax-
-  Error, so code written for cElementTree still works.
-
-- Changed serializer to place all namespace declarations on the
-  root element.
-
-- Changed serializer to omits start and end tags for elements that
-  have the "tag" attribute set to None.
-
-- Fixed serialization of newlines in attribute values.
-
-- Added "target" and "version" attributes to the XMLParser class.
-
-- Added support for optional "doctype" hook to XMLParser.
-
-- Added future warnings for "if e" (use explicit len(e) or is None
-  test) and "e.getchildren()" (use list(e) or iteration).
-
-- Added future warnings for tree.find("/tag") and similar searches,
-  which are broken in 1.3 and earlier.
-
-- Removed old SgmlopXMLTreeBuilder.py, SimpleXMLTreeBuilder.py, and
-  XMLTreeBuilder.py modules.
-
-(1.3a1 released)
-
-- Added 'tostringlist' and 'fromstringlist' helper functions.  These
-  are similar to 'tostring' and 'fromstring', but work on sequences of
-  string fragments, rather than entire strings.
-
-- Added xml_declaration option to serializer.  If set to a true
-  value, the xml declaration is always written.  If set to a false
-  value (except None), it's never written.  If omitted, it's written
-  only if the file is using a non-default encoding (i.e. not utf-8
-  or us-ascii).
-
-- (experimental) Added 'register_namespace' helper.  This can be used
-  to register well-known prefixes for given namespace URI:s, for use
-  when serializing.  Note that the namespace mapping is a global
-  setting.
-
-- Renamed XMLTreeBuilder to XMLParser, as a first step in sorting
-  out the TreeBuilder vs. TreeBuilder mess.  The old name is still
-  available, of course.
-
-- Change Element to be the reference implementation, rather than a
-  factory function.  Removed the _ElementInterface class.
+$Id: CHANGES 3224 2007-08-27 21:23:39Z fredrik $
 
 *** Changes from release 1.1 to 1.2 ***
 
-(1.2.6 released)
+(1.2.7 released)
+
+- Added parser support for IronPython (through the ElementIron
+  module).
+
+- Changed serialization of attribute values; newlines are now
+  preserved; apostrophes are no longer escaped.  The serializer
+  was also made a bit faster (~20% on my test cases).
+
+(1.2.6 released; Python 2.5 released)
 
 - Fixed handling of entities defined in internal DTD's (reported
   by Greg Wilson).

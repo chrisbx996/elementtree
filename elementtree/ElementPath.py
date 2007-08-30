@@ -1,6 +1,6 @@
 #
 # ElementTree
-# $Id: ElementPath.py 3032 2007-06-22 12:44:08Z fredrik $
+# $Id: ElementPath.py 3225 2007-08-27 21:32:08Z fredrik $
 #
 # limited xpath support for element trees
 #

@@ -21,18 +21,21 @@ this element represents (the element type, in other words).</li>
 <li>a number of <i>child elements</i>, stored in a Python sequence</li>
 </ul>
 
-To create an element instance, use the <a class="link" href="#elementtree.ElementTree.Element-class"><b>Element</b></a> constructor
-or the <a class="link" href="#elementtree.ElementTree.SubElement-function"><b>SubElement</b></a> factory function.
+To create an element instance, use the <a class="link" href="#elementtree.ElementTree.Element-function"><b>Element</b></a> or <a class="link" href="#elementtree.ElementTree.SubElement-function"><b>SubElement</b></a> factory functions.
 </p><p>
 The <a class="link" href="#elementtree.ElementTree.ElementTree-class"><b>ElementTree</b></a> class can be used to wrap an element
 structure, and convert it from and to XML.
 </p><h2>Module Contents</h2>
 <dl>
+<dt><b>_ElementInterface(tag, attrib)</b> (class) [<a href='#elementtree.ElementTree._ElementInterface-class'>#</a>]</dt>
+<dd>
+<p>Internal element class.</p>
+<p>For more information about this class, see <a href='#elementtree.ElementTree._ElementInterface-class'><i>The _ElementInterface Class</i></a>.</p>
+</dd>
 <dt><a id='elementtree.ElementTree.Comment-function' name='elementtree.ElementTree.Comment-function'><b>Comment(text=None)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.Comment-function'>#</a>]</dt>
 <dd>
 <p>Comment element factory.  This factory function creates a special
-element that will be serialized as an XML comment by the standard
-serializer.
+element that will be serialized as an XML comment.
 </p><p>
 The comment string can be either an 8-bit ASCII string or a Unicode
 string.
@@ -60,10 +63,17 @@ version, it's written as an ordinary XML file.
 An element tree or an individual element.</dd>
 </dl><br />
 </dd>
-<dt><b>Element(tag, attrib={}, **extra)</b> (class) [<a href='#elementtree.ElementTree.Element-class'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.Element-function' name='elementtree.ElementTree.Element-function'><b>Element(tag, attrib={}, **extra)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.Element-function'>#</a>]</dt>
 <dd>
-<p>Element class.</p>
-<dl>
+<p>Element factory.  This function returns an object implementing the
+standard Element interface.  The exact class or type of that object
+is implementation dependent, but it will always be compatible with
+the <a class="link" href="#elementtree.ElementTree._ElementInterface-class"><b>_ElementInterface</b></a> class in this module.
+</p><p>
+The element name, attribute names, and attribute values can be
+either 8-bit ASCII strings or Unicode strings.
+
+</p><dl>
 <dt><i>tag</i></dt>
 <dd>
 The element name.</dd>
@@ -73,8 +83,10 @@ An optional dictionary, containing element attributes.</dd>
 <dt><i>**extra</i></dt>
 <dd>
 Additional attributes, given as keyword arguments.</dd>
+<dt>Returns:</dt>
+<dd>
+An element instance.</dd>
 </dl><br />
-<p>For more information about this class, see <a href='#elementtree.ElementTree.Element-class'><i>The Element Class</i></a>.</p>
 </dd>
 <dt><b>ElementTree(element=None, file=None)</b> (class) [<a href='#elementtree.ElementTree.ElementTree-class'>#</a>]</dt>
 <dd>
@@ -85,7 +97,7 @@ Additional attributes, given as keyword arguments.</dd>
 Optional root element.</dd>
 <dt><i>file=</i></dt>
 <dd>
-Optional file handle or file name.  If given, the
+Optional file handle or name.  If given, the
     tree is initialized with the contents of this XML file.</dd>
 </dl><br />
 <p>For more information about this class, see <a href='#elementtree.ElementTree.ElementTree-class'><i>The ElementTree Class</i></a>.</p>
@@ -103,23 +115,6 @@ A string containing XML data.</dd>
 An Element instance.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.fromstringlist-function' name='elementtree.ElementTree.fromstringlist-function'><b>fromstringlist(sequence, parser=None)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.fromstringlist-function'>#</a>]</dt>
-<dd>
-<p>Parses an XML document from a sequence of string fragments.</p>
-<dl>
-<dt><i>sequence</i></dt>
-<dd>
-A list or other sequence containing XML data fragments.</dd>
-<dt><i>parser</i></dt>
-<dd>
-An optional parser instance.  If not given, the
-    standard <a class="link" href="#elementtree.ElementTree.XMLParser-class"><b>XMLParser</b></a> parser is used.
-</dd>
-<dt>Returns:</dt>
-<dd>
-An Element instance.</dd>
-</dl><br />
-</dd>
 <dt><a id='elementtree.ElementTree.iselement-function' name='elementtree.ElementTree.iselement-function'><b>iselement(element)</b></a> &rArr; flag [<a href='#elementtree.ElementTree.iselement-function'>#</a>]</dt>
 <dd>
 <p>Checks if an object appears to be a valid element object.</p>
@@ -132,7 +127,7 @@ element instance.</dd>
 A true value if this is an element object.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.iterparse-function' name='elementtree.ElementTree.iterparse-function'><b>iterparse(source, events=None, parser=None)</b></a> [<a href='#elementtree.ElementTree.iterparse-function'>#</a>]</dt>
+<dt><b>iterparse(source, events=None)</b> (class) [<a href='#elementtree.ElementTree.iterparse-class'>#</a>]</dt>
 <dd>
 <p>Parses an XML document into an element tree incrementally, and reports
 what's going on to the user.</p>
@@ -144,15 +139,11 @@ A filename or file object containing XML data.</dd>
 <dd>
 A list of events to report back.  If omitted, only &quot;end&quot;
     events are reported.</dd>
-<dt><i>parser</i></dt>
-<dd>
-An optional parser instance.  If not given, the
-    standard <a class="link" href="#elementtree.ElementTree.XMLParser-class"><b>XMLParser</b></a> parser is used.
-</dd>
 <dt>Returns:</dt>
 <dd>
 A (event, elem) iterator.</dd>
 </dl><br />
+<p>For more information about this class, see <a href='#elementtree.ElementTree.iterparse-class'><i>The iterparse Class</i></a>.</p>
 </dd>
 <dt><a id='elementtree.ElementTree.parse-function' name='elementtree.ElementTree.parse-function'><b>parse(source, parser=None)</b></a> [<a href='#elementtree.ElementTree.parse-function'>#</a>]</dt>
 <dd>
@@ -164,7 +155,7 @@ A filename or file object containing XML data.</dd>
 <dt><i>parser</i></dt>
 <dd>
 An optional parser instance.  If not given, the
-    standard <a class="link" href="#elementtree.ElementTree.XMLParser-class"><b>XMLParser</b></a> parser is used.
+    standard <a class="link" href="#elementtree.ElementTree.XMLTreeBuilder-class"><b>XMLTreeBuilder</b></a> parser is used.
 </dd>
 <dt>Returns:</dt>
 <dd>
@@ -174,8 +165,7 @@ An ElementTree instance</dd>
 <dt><a id='elementtree.ElementTree.ProcessingInstruction-function' name='elementtree.ElementTree.ProcessingInstruction-function'><b>ProcessingInstruction(target, text=None)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.ProcessingInstruction-function'>#</a>]</dt>
 <dd>
 <p>PI element factory.  This factory function creates a special element
-that will be serialized as an XML processing instruction by the standard
-serializer.</p>
+that will be serialized as an XML processing instruction.</p>
 <dl>
 <dt><i>target</i></dt>
 <dd>
@@ -205,21 +195,6 @@ Optional tag.  If given, the first argument is interpreted as
 An opaque object, representing the QName.</dd>
 </dl><br />
 <p>For more information about this class, see <a href='#elementtree.ElementTree.QName-class'><i>The QName Class</i></a>.</p>
-</dd>
-<dt><a id='elementtree.ElementTree.register_namespace-function' name='elementtree.ElementTree.register_namespace-function'><b>register_namespace(prefix, uri)</b></a> [<a href='#elementtree.ElementTree.register_namespace-function'>#</a>]</dt>
-<dd>
-<p>Registers a namespace prefix.  The registry is global, and any
-existing mapping for either the given prefix or the namespace URI
-will be removed.</p>
-<dl>
-<dt><i>prefix</i></dt>
-<dd>
-Namespace prefix.</dd>
-<dt><i>uri</i></dt>
-<dd>
-Namespace uri.  Tags and attributes in this namespace
-    will be serialized with the given prefix, if at all possible.</dd>
-</dl><br />
 </dd>
 <dt><a id='elementtree.ElementTree.SubElement-function' name='elementtree.ElementTree.SubElement-function'><b>SubElement(parent, tag, attrib={}, **extra)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.SubElement-function'>#</a>]</dt>
 <dd>
@@ -260,19 +235,6 @@ An Element instance.</dd>
 An encoded string containing the XML data.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.tostringlist-function' name='elementtree.ElementTree.tostringlist-function'><b>tostringlist(element, encoding=None)</b></a> &rArr; sequence [<a href='#elementtree.ElementTree.tostringlist-function'>#</a>]</dt>
-<dd>
-<p>Generates a string representation of an XML element, including all
-subelements.  The string is returned as a sequence of string fragments.</p>
-<dl>
-<dt><i>element</i></dt>
-<dd>
-An Element instance.</dd>
-<dt>Returns:</dt>
-<dd>
-A sequence object containing the XML data.</dd>
-</dl><br />
-</dd>
 <dt><b>TreeBuilder(element_factory=None)</b> (class) [<a href='#elementtree.ElementTree.TreeBuilder-class'>#</a>]</dt>
 <dd>
 <p>Generic element structure builder.</p>
@@ -284,7 +246,7 @@ Optional element factory.  This factory
 </dl><br />
 <p>For more information about this class, see <a href='#elementtree.ElementTree.TreeBuilder-class'><i>The TreeBuilder Class</i></a>.</p>
 </dd>
-<dt><a id='elementtree.ElementTree.XML-function' name='elementtree.ElementTree.XML-function'><b>XML(text, parser=None)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.XML-function'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.XML-function' name='elementtree.ElementTree.XML-function'><b>XML(text)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.XML-function'>#</a>]</dt>
 <dd>
 <p>Parses an XML document from a string constant.  This function can
 be used to embed &quot;XML literals&quot; in Python code.</p>
@@ -292,17 +254,12 @@ be used to embed &quot;XML literals&quot; in Python code.</p>
 <dt><i>source</i></dt>
 <dd>
 A string containing XML data.</dd>
-<dt><i>parser</i></dt>
-<dd>
-An optional parser instance.  If not given, the
-    standard <a class="link" href="#elementtree.ElementTree.XMLParser-class"><b>XMLParser</b></a> parser is used.
-</dd>
 <dt>Returns:</dt>
 <dd>
 An Element instance.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.XMLID-function' name='elementtree.ElementTree.XMLID-function'><b>XMLID(text, parser=None)</b></a> &rArr; (Element, dictionary) [<a href='#elementtree.ElementTree.XMLID-function'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.XMLID-function' name='elementtree.ElementTree.XMLID-function'><b>XMLID(text)</b></a> &rArr; (Element, dictionary) [<a href='#elementtree.ElementTree.XMLID-function'>#</a>]</dt>
 <dd>
 <p>Parses an XML document from a string constant, and also returns
 a dictionary which maps from element id:s to elements.</p>
@@ -310,17 +267,12 @@ a dictionary which maps from element id:s to elements.</p>
 <dt><i>source</i></dt>
 <dd>
 A string containing XML data.</dd>
-<dt><i>parser</i></dt>
-<dd>
-An optional parser instance.  If not given, the
-    standard <a class="link" href="#elementtree.ElementTree.XMLParser-class"><b>XMLParser</b></a> parser is used.
-</dd>
 <dt>Returns:</dt>
 <dd>
 A tuple containing an Element instance and a dictionary.</dd>
 </dl><br />
 </dd>
-<dt><b>XMLParser(html=0, target=None, encoding=None)</b> (class) [<a href='#elementtree.ElementTree.XMLParser-class'>#</a>]</dt>
+<dt><b>XMLTreeBuilder(html=0, target=None)</b> (class) [<a href='#elementtree.ElementTree.XMLTreeBuilder-class'>#</a>]</dt>
 <dd>
 <p>Element structure builder for XML source data, based on the
 expat parser.</p>
@@ -334,37 +286,23 @@ Target object.  If omitted, the builder uses an
 <dd>
 Predefine HTML entities.  This flag is not supported
     by the current implementation.</dd>
-<dt><i>encoding=</i></dt>
-<dd>
-Optional encoding.  If given, the value overrides
-    the encoding specified in the XML file.</dd>
 </dl><br />
-<p>For more information about this class, see <a href='#elementtree.ElementTree.XMLParser-class'><i>The XMLParser Class</i></a>.</p>
+<p>For more information about this class, see <a href='#elementtree.ElementTree.XMLTreeBuilder-class'><i>The XMLTreeBuilder Class</i></a>.</p>
 </dd>
 </dl>
-<h2><a id='elementtree.ElementTree.Element-class' name='elementtree.ElementTree.Element-class'>The Element Class</a></h2>
+<h2><a id='elementtree.ElementTree._ElementInterface-class' name='elementtree.ElementTree._ElementInterface-class'>The _ElementInterface Class</a></h2>
 <dl>
-<dt><b>Element(tag, attrib={}, **extra)</b> (class) [<a href='#elementtree.ElementTree.Element-class'>#</a>]</dt>
+<dt><b>_ElementInterface(tag, attrib)</b> (class) [<a href='#elementtree.ElementTree._ElementInterface-class'>#</a>]</dt>
 <dd>
-<p>Element class.  This class defines the Element interface, and
-provides a reference implementation of this interface.
+<p>Internal element class.  This class defines the Element interface,
+and provides a reference implementation of this interface.
 </p><p>
-The element name, attribute names, and attribute values can be
-either 8-bit ASCII strings or Unicode strings.
+You should not create instances of this class directly.  Use the
+appropriate factory functions instead, such as <a class="link" href="#elementtree.ElementTree.Element-function"><b>Element</b></a>
+and <a class="link" href="#elementtree.ElementTree.SubElement-function"><b>SubElement</b></a>.
 
-</p><dl>
-<dt><i>tag</i></dt>
-<dd>
-The element name.</dd>
-<dt><i>attrib</i></dt>
-<dd>
-An optional dictionary, containing element attributes.</dd>
-<dt><i>**extra</i></dt>
-<dd>
-Additional attributes, given as keyword arguments.</dd>
-</dl><br />
-</dd>
-<dt><a id='elementtree.ElementTree.Element.__delitem__-method' name='elementtree.ElementTree.Element.__delitem__-method'><b>__delitem__(index)</b></a> [<a href='#elementtree.ElementTree.Element.__delitem__-method'>#</a>]</dt>
+</p></dd>
+<dt><a id='elementtree.ElementTree._ElementInterface.__delitem__-method' name='elementtree.ElementTree._ElementInterface.__delitem__-method'><b>__delitem__(index)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__delitem__-method'>#</a>]</dt>
 <dd>
 <p>Deletes the given subelement.</p>
 <dl>
@@ -375,7 +313,7 @@ What subelement to delete.</dd>
 If the given element does not exist.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.__delslice__-method' name='elementtree.ElementTree.Element.__delslice__-method'><b>__delslice__(start, stop)</b></a> [<a href='#elementtree.ElementTree.Element.__delslice__-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.__delslice__-method' name='elementtree.ElementTree._ElementInterface.__delslice__-method'><b>__delslice__(start, stop)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__delslice__-method'>#</a>]</dt>
 <dd>
 <p>Deletes a number of subelements.</p>
 <dl>
@@ -387,7 +325,7 @@ The first subelement to delete.</dd>
 The first subelement to leave in there.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.__getitem__-method' name='elementtree.ElementTree.Element.__getitem__-method'><b>__getitem__(index)</b></a> [<a href='#elementtree.ElementTree.Element.__getitem__-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.__getitem__-method' name='elementtree.ElementTree._ElementInterface.__getitem__-method'><b>__getitem__(index)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__getitem__-method'>#</a>]</dt>
 <dd>
 <p>Returns the given subelement.</p>
 <dl>
@@ -401,7 +339,7 @@ The given subelement.</dd>
 If the given element does not exist.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.__getslice__-method' name='elementtree.ElementTree.Element.__getslice__-method'><b>__getslice__(start, stop)</b></a> [<a href='#elementtree.ElementTree.Element.__getslice__-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.__getslice__-method' name='elementtree.ElementTree._ElementInterface.__getslice__-method'><b>__getslice__(start, stop)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__getslice__-method'>#</a>]</dt>
 <dd>
 <p>Returns a list containing subelements in the given range.</p>
 <dl>
@@ -416,7 +354,7 @@ The first subelement that shouldn't be returned.</dd>
 A sequence object containing subelements.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.__len__-method' name='elementtree.ElementTree.Element.__len__-method'><b>__len__()</b></a> [<a href='#elementtree.ElementTree.Element.__len__-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.__len__-method' name='elementtree.ElementTree._ElementInterface.__len__-method'><b>__len__()</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__len__-method'>#</a>]</dt>
 <dd>
 <p>Returns the number of subelements.</p>
 <dl>
@@ -425,7 +363,7 @@ A sequence object containing subelements.</dd>
 The number of subelements.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.__setitem__-method' name='elementtree.ElementTree.Element.__setitem__-method'><b>__setitem__(index, element)</b></a> [<a href='#elementtree.ElementTree.Element.__setitem__-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.__setitem__-method' name='elementtree.ElementTree._ElementInterface.__setitem__-method'><b>__setitem__(index, element)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__setitem__-method'>#</a>]</dt>
 <dd>
 <p>Replaces the given subelement.</p>
 <dl>
@@ -441,7 +379,7 @@ If the given element does not exist.</dd>
 If element is not a valid object.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.__setslice__-method' name='elementtree.ElementTree.Element.__setslice__-method'><b>__setslice__(start, stop, elements)</b></a> [<a href='#elementtree.ElementTree.Element.__setslice__-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.__setslice__-method' name='elementtree.ElementTree._ElementInterface.__setslice__-method'><b>__setslice__(start, stop, elements)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.__setslice__-method'>#</a>]</dt>
 <dd>
 <p>Replaces a number of subelements with elements from a sequence.</p>
 <dl>
@@ -458,7 +396,7 @@ A sequence object with zero or more elements.</dd>
 If a sequence member is not a valid object.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.append-method' name='elementtree.ElementTree.Element.append-method'><b>append(element)</b></a> [<a href='#elementtree.ElementTree.Element.append-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.append-method' name='elementtree.ElementTree._ElementInterface.append-method'><b>append(element)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.append-method'>#</a>]</dt>
 <dd>
 <p>Adds a subelement to the end of this element.</p>
 <dl>
@@ -469,32 +407,21 @@ The element to add.</dd>
 If a sequence member is not a valid object.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.attrib-attribute' name='elementtree.ElementTree.Element.attrib-attribute'><b>attrib</b></a> [<a href='#elementtree.ElementTree.Element.attrib-attribute'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.attrib-attribute' name='elementtree.ElementTree._ElementInterface.attrib-attribute'><b>attrib</b></a> [<a href='#elementtree.ElementTree._ElementInterface.attrib-attribute'>#</a>]</dt>
 <dd>
 <p>(Attribute) Element attribute dictionary.  Where possible, use
-<a class="link" href="#elementtree.ElementTree.Element.get-method"><b>get</b></a>,
-<a class="link" href="#elementtree.ElementTree.Element.set-method"><b>set</b></a>,
-<a class="link" href="#elementtree.ElementTree.Element.keys-method"><b>keys</b></a>, and
-<a class="link" href="#elementtree.ElementTree.Element.items-method"><b>items</b></a> to access
+<a class="link" href="#elementtree.ElementTree._ElementInterface.get-method"><b>get</b></a>,
+<a class="link" href="#elementtree.ElementTree._ElementInterface.set-method"><b>set</b></a>,
+<a class="link" href="#elementtree.ElementTree._ElementInterface.keys-method"><b>keys</b></a>, and
+<a class="link" href="#elementtree.ElementTree._ElementInterface.items-method"><b>items</b></a> to access
 element attributes.
 </p></dd>
-<dt><a id='elementtree.ElementTree.Element.clear-method' name='elementtree.ElementTree.Element.clear-method'><b>clear()</b></a> [<a href='#elementtree.ElementTree.Element.clear-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.clear-method' name='elementtree.ElementTree._ElementInterface.clear-method'><b>clear()</b></a> [<a href='#elementtree.ElementTree._ElementInterface.clear-method'>#</a>]</dt>
 <dd>
 <p>Resets an element.  This function removes all subelements, clears
 all attributes, and sets the text and tail attributes to None.</p>
 </dd>
-<dt><a id='elementtree.ElementTree.Element.extend-method' name='elementtree.ElementTree.Element.extend-method'><b>extend(elements)</b></a> [<a href='#elementtree.ElementTree.Element.extend-method'>#</a>]</dt>
-<dd>
-<p>Appends subelements from a sequence.</p>
-<dl>
-<dt><i>elements</i></dt>
-<dd>
-A sequence object with zero or more elements.</dd>
-<dt>Raises <b>AssertionError</b>:</dt><dd>
-If a subelement is not a valid object.</dd>
-</dl><br />
-</dd>
-<dt><a id='elementtree.ElementTree.Element.find-method' name='elementtree.ElementTree.Element.find-method'><b>find(path)</b></a> &rArr; Element or None [<a href='#elementtree.ElementTree.Element.find-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.find-method' name='elementtree.ElementTree._ElementInterface.find-method'><b>find(path)</b></a> &rArr; Element or None [<a href='#elementtree.ElementTree._ElementInterface.find-method'>#</a>]</dt>
 <dd>
 <p>Finds the first matching subelement, by tag name or path.</p>
 <dl>
@@ -506,7 +433,7 @@ What element to look for.</dd>
 The first matching element, or None if no element was found.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.findall-method' name='elementtree.ElementTree.Element.findall-method'><b>findall(path)</b></a> &rArr; list of Element instances [<a href='#elementtree.ElementTree.Element.findall-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.findall-method' name='elementtree.ElementTree._ElementInterface.findall-method'><b>findall(path)</b></a> &rArr; list of Element instances [<a href='#elementtree.ElementTree._ElementInterface.findall-method'>#</a>]</dt>
 <dd>
 <p>Finds all matching subelements, by tag name or path.</p>
 <dl>
@@ -519,7 +446,7 @@ A list or iterator containing all matching elements,
    in document order.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.findtext-method' name='elementtree.ElementTree.Element.findtext-method'><b>findtext(path, default=None)</b></a> &rArr; string [<a href='#elementtree.ElementTree.Element.findtext-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.findtext-method' name='elementtree.ElementTree._ElementInterface.findtext-method'><b>findtext(path, default=None)</b></a> &rArr; string [<a href='#elementtree.ElementTree._ElementInterface.findtext-method'>#</a>]</dt>
 <dd>
 <p>Finds text for the first matching subelement, by tag name or path.</p>
 <dl>
@@ -537,7 +464,7 @@ The text content of the first matching element, or the
     empty string.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.get-method' name='elementtree.ElementTree.Element.get-method'><b>get(key, default=None)</b></a> &rArr; string or None [<a href='#elementtree.ElementTree.Element.get-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.get-method' name='elementtree.ElementTree._ElementInterface.get-method'><b>get(key, default=None)</b></a> &rArr; string or None [<a href='#elementtree.ElementTree._ElementInterface.get-method'>#</a>]</dt>
 <dd>
 <p>Gets an element attribute.</p>
 <dl>
@@ -553,38 +480,17 @@ The attribute value, or the default value, if the
     attribute was not found.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.getchildren-method' name='elementtree.ElementTree.Element.getchildren-method'><b>getchildren()</b></a> &rArr; list of Element instances [<a href='#elementtree.ElementTree.Element.getchildren-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.getchildren-method' name='elementtree.ElementTree._ElementInterface.getchildren-method'><b>getchildren()</b></a> &rArr; list of Element instances [<a href='#elementtree.ElementTree._ElementInterface.getchildren-method'>#</a>]</dt>
 <dd>
-<p>(Deprecated) Returns all subelements.  The elements are returned
-in document order.</p>
+<p>Returns all subelements.  The elements are returned in document
+order.</p>
 <dl>
 <dt>Returns:</dt>
 <dd>
 A list of subelements.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.insert-method' name='elementtree.ElementTree.Element.insert-method'><b>insert(index, element)</b></a> [<a href='#elementtree.ElementTree.Element.insert-method'>#</a>]</dt>
-<dd>
-<p>Inserts a subelement at the given position in this element.</p>
-<dl>
-<dt><i>index</i></dt>
-<dd>
-Where to insert the new subelement.</dd>
-<dt>Raises <b>AssertionError</b>:</dt><dd>
-If the element is not a valid object.</dd>
-</dl><br />
-</dd>
-<dt><a id='elementtree.ElementTree.Element.items-method' name='elementtree.ElementTree.Element.items-method'><b>items()</b></a> &rArr; list of (string, string) tuples [<a href='#elementtree.ElementTree.Element.items-method'>#</a>]</dt>
-<dd>
-<p>Gets element attributes, as a sequence.  The attributes are
-returned in an arbitrary order.</p>
-<dl>
-<dt>Returns:</dt>
-<dd>
-A list of (name, value) tuples for all attributes.</dd>
-</dl><br />
-</dd>
-<dt><a id='elementtree.ElementTree.Element.iter-method' name='elementtree.ElementTree.Element.iter-method'><b>iter(tag=None)</b></a> &rArr; list or iterator [<a href='#elementtree.ElementTree.Element.iter-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.getiterator-method' name='elementtree.ElementTree._ElementInterface.getiterator-method'><b>getiterator(tag=None)</b></a> &rArr; list or iterator [<a href='#elementtree.ElementTree._ElementInterface.getiterator-method'>#</a>]</dt>
 <dd>
 <p>Creates a tree iterator.  The iterator loops over this element
 and all subelements, in document order, and returns all elements
@@ -602,7 +508,28 @@ What tags to look for (default is to return all elements).</dd>
 A list or iterator containing all the matching elements.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.keys-method' name='elementtree.ElementTree.Element.keys-method'><b>keys()</b></a> &rArr; list of strings [<a href='#elementtree.ElementTree.Element.keys-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.insert-method' name='elementtree.ElementTree._ElementInterface.insert-method'><b>insert(index, element)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.insert-method'>#</a>]</dt>
+<dd>
+<p>Inserts a subelement at the given position in this element.</p>
+<dl>
+<dt><i>index</i></dt>
+<dd>
+Where to insert the new subelement.</dd>
+<dt>Raises <b>AssertionError</b>:</dt><dd>
+If the element is not a valid object.</dd>
+</dl><br />
+</dd>
+<dt><a id='elementtree.ElementTree._ElementInterface.items-method' name='elementtree.ElementTree._ElementInterface.items-method'><b>items()</b></a> &rArr; list of (string, string) tuples [<a href='#elementtree.ElementTree._ElementInterface.items-method'>#</a>]</dt>
+<dd>
+<p>Gets element attributes, as a sequence.  The attributes are
+returned in an arbitrary order.</p>
+<dl>
+<dt>Returns:</dt>
+<dd>
+A list of (name, value) tuples for all attributes.</dd>
+</dl><br />
+</dd>
+<dt><a id='elementtree.ElementTree._ElementInterface.keys-method' name='elementtree.ElementTree._ElementInterface.keys-method'><b>keys()</b></a> &rArr; list of strings [<a href='#elementtree.ElementTree._ElementInterface.keys-method'>#</a>]</dt>
 <dd>
 <p>Gets a list of attribute names.  The names are returned in an
 arbitrary order (just like for an ordinary Python dictionary).</p>
@@ -612,7 +539,7 @@ arbitrary order (just like for an ordinary Python dictionary).</p>
 A list of element attribute names.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.makeelement-method' name='elementtree.ElementTree.Element.makeelement-method'><b>makeelement(tag, attrib)</b></a> [<a href='#elementtree.ElementTree.Element.makeelement-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.makeelement-method' name='elementtree.ElementTree._ElementInterface.makeelement-method'><b>makeelement(tag, attrib)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.makeelement-method'>#</a>]</dt>
 <dd>
 <p>Creates a new element object of the same type as this element.</p>
 <dl>
@@ -627,7 +554,7 @@ Element attributes, given as a dictionary.</dd>
 A new element instance.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.remove-method' name='elementtree.ElementTree.Element.remove-method'><b>remove(element)</b></a> [<a href='#elementtree.ElementTree.Element.remove-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.remove-method' name='elementtree.ElementTree._ElementInterface.remove-method'><b>remove(element)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.remove-method'>#</a>]</dt>
 <dd>
 <p>Removes a matching subelement.  Unlike the <b>find</b> methods,
 this method compares elements based on identity, not on tag
@@ -643,7 +570,7 @@ If a matching element could not be found.</dd>
 If the element is not a valid object.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.set-method' name='elementtree.ElementTree.Element.set-method'><b>set(key, value)</b></a> [<a href='#elementtree.ElementTree.Element.set-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.set-method' name='elementtree.ElementTree._ElementInterface.set-method'><b>set(key, value)</b></a> [<a href='#elementtree.ElementTree._ElementInterface.set-method'>#</a>]</dt>
 <dd>
 <p>Sets an element attribute.</p>
 <dl>
@@ -655,17 +582,17 @@ What attribute to set.</dd>
 The attribute value.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.Element.tag-attribute' name='elementtree.ElementTree.Element.tag-attribute'><b>tag</b></a> [<a href='#elementtree.ElementTree.Element.tag-attribute'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.tag-attribute' name='elementtree.ElementTree._ElementInterface.tag-attribute'><b>tag</b></a> [<a href='#elementtree.ElementTree._ElementInterface.tag-attribute'>#</a>]</dt>
 <dd>
 <p>(Attribute) Element tag.</p>
 </dd>
-<dt><a id='elementtree.ElementTree.Element.tail-attribute' name='elementtree.ElementTree.Element.tail-attribute'><b>tail</b></a> [<a href='#elementtree.ElementTree.Element.tail-attribute'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.tail-attribute' name='elementtree.ElementTree._ElementInterface.tail-attribute'><b>tail</b></a> [<a href='#elementtree.ElementTree._ElementInterface.tail-attribute'>#</a>]</dt>
 <dd>
 <p>(Attribute) Text after this element's end tag, but before the
 next sibling element's start tag.  This is either a string or
 the value None, if there was no text.</p>
 </dd>
-<dt><a id='elementtree.ElementTree.Element.text-attribute' name='elementtree.ElementTree.Element.text-attribute'><b>text</b></a> [<a href='#elementtree.ElementTree.Element.text-attribute'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree._ElementInterface.text-attribute' name='elementtree.ElementTree._ElementInterface.text-attribute'><b>text</b></a> [<a href='#elementtree.ElementTree._ElementInterface.text-attribute'>#</a>]</dt>
 <dd>
 <p>(Attribute) Text before first subelement.  This is either a
 string or the value None, if there was no text.</p>
@@ -684,7 +611,7 @@ standard XML.</p>
 Optional root element.</dd>
 <dt><i>file=</i></dt>
 <dd>
-Optional file handle or file name.  If given, the
+Optional file handle or name.  If given, the
     tree is initialized with the contents of this XML file.</dd>
 </dl><br />
 </dd>
@@ -745,16 +672,7 @@ The text content of the first matching element, or the
     empty string.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.ElementTree.getroot-method' name='elementtree.ElementTree.ElementTree.getroot-method'><b>getroot()</b></a> &rArr; Element [<a href='#elementtree.ElementTree.ElementTree.getroot-method'>#</a>]</dt>
-<dd>
-<p>Gets the root element for this tree.</p>
-<dl>
-<dt>Returns:</dt>
-<dd>
-An element instance.</dd>
-</dl><br />
-</dd>
-<dt><a id='elementtree.ElementTree.ElementTree.iter-method' name='elementtree.ElementTree.ElementTree.iter-method'><b>iter(tag=None)</b></a> &rArr; iterator [<a href='#elementtree.ElementTree.ElementTree.iter-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.ElementTree.getiterator-method' name='elementtree.ElementTree.ElementTree.getiterator-method'><b>getiterator(tag=None)</b></a> &rArr; iterator [<a href='#elementtree.ElementTree.ElementTree.getiterator-method'>#</a>]</dt>
 <dd>
 <p>Creates a tree iterator for the root element.  The iterator loops
 over all elements in this tree, in document order.</p>
@@ -767,6 +685,15 @@ What tags to look for (default is to return all elements)</dd>
 An iterator.</dd>
 </dl><br />
 </dd>
+<dt><a id='elementtree.ElementTree.ElementTree.getroot-method' name='elementtree.ElementTree.ElementTree.getroot-method'><b>getroot()</b></a> &rArr; Element [<a href='#elementtree.ElementTree.ElementTree.getroot-method'>#</a>]</dt>
+<dd>
+<p>Gets the root element for this tree.</p>
+<dl>
+<dt>Returns:</dt>
+<dd>
+An element instance.</dd>
+</dl><br />
+</dd>
 <dt><a id='elementtree.ElementTree.ElementTree.parse-method' name='elementtree.ElementTree.ElementTree.parse-method'><b>parse(source, parser=None)</b></a> &rArr; Element [<a href='#elementtree.ElementTree.ElementTree.parse-method'>#</a>]</dt>
 <dd>
 <p>Loads an external XML document into this element tree.</p>
@@ -774,31 +701,46 @@ An iterator.</dd>
 <dt><i>source</i></dt>
 <dd>
 A file name or file object.</dd>
-<dt><i>parser=</i></dt>
+<dt><i>parser</i></dt>
 <dd>
 An optional parser instance.  If not given, the
-    standard <a class="link" href="#elementtree.ElementTree.XMLParser-class"><b>XMLParser</b></a> parser is used.
+    standard <a class="link" href="#elementtree.ElementTree.XMLTreeBuilder-class"><b>XMLTreeBuilder</b></a> parser is used.
 </dd>
 <dt>Returns:</dt>
 <dd>
 The document root element.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.ElementTree.write-method' name='elementtree.ElementTree.ElementTree.write-method'><b>write(file, encoding=&quot;us-ascii&quot;, xml_declaration=None)</b></a> [<a href='#elementtree.ElementTree.ElementTree.write-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.ElementTree.write-method' name='elementtree.ElementTree.ElementTree.write-method'><b>write(file, encoding=&quot;us-ascii&quot;)</b></a> [<a href='#elementtree.ElementTree.ElementTree.write-method'>#</a>]</dt>
 <dd>
 <p>Writes the element tree to a file, as XML.</p>
 <dl>
 <dt><i>file</i></dt>
 <dd>
 A file name, or a file object opened for writing.</dd>
-<dt><i>encoding=</i></dt>
+<dt><i>encoding</i></dt>
 <dd>
 Optional output encoding (default is US-ASCII).</dd>
-<dt><i>xml_declaration=</i></dt>
+</dl><br />
+</dd>
+</dl>
+<h2><a id='elementtree.ElementTree.iterparse-class' name='elementtree.ElementTree.iterparse-class'>The iterparse Class</a></h2>
+<dl>
+<dt><b>iterparse(source, events=None)</b> (class) [<a href='#elementtree.ElementTree.iterparse-class'>#</a>]</dt>
 <dd>
-Controls if an XML declaration should
-    be added to the file.  Use False for never, True for always,
-    None for only if not US-ASCII or UTF-8.  None is default.</dd>
+<p>Parses an XML document into an element tree incrementally, and reports
+what's going on to the user.</p>
+<dl>
+<dt><i>source</i></dt>
+<dd>
+A filename or file object containing XML data.</dd>
+<dt><i>events</i></dt>
+<dd>
+A list of events to report back.  If omitted, only &quot;end&quot;
+    events are reported.</dd>
+<dt>Returns:</dt>
+<dd>
+A (event, elem) iterator.</dd>
 </dl><br />
 </dd>
 </dl>
@@ -842,7 +784,7 @@ Optional element factory.  This factory
 </dd>
 <dt><a id='elementtree.ElementTree.TreeBuilder.close-method' name='elementtree.ElementTree.TreeBuilder.close-method'><b>close()</b></a> &rArr; Element [<a href='#elementtree.ElementTree.TreeBuilder.close-method'>#</a>]</dt>
 <dd>
-<p>Flushes the builder buffers, and returns the toplevel document
+<p>Flushes the parser buffers, and returns the toplevel documen
 element.</p>
 <dl>
 <dt>Returns:</dt>
@@ -888,9 +830,9 @@ The opened element.</dd>
 </dl><br />
 </dd>
 </dl>
-<h2><a id='elementtree.ElementTree.XMLParser-class' name='elementtree.ElementTree.XMLParser-class'>The XMLParser Class</a></h2>
+<h2><a id='elementtree.ElementTree.XMLTreeBuilder-class' name='elementtree.ElementTree.XMLTreeBuilder-class'>The XMLTreeBuilder Class</a></h2>
 <dl>
-<dt><b>XMLParser(html=0, target=None, encoding=None)</b> (class) [<a href='#elementtree.ElementTree.XMLParser-class'>#</a>]</dt>
+<dt><b>XMLTreeBuilder(html=0, target=None)</b> (class) [<a href='#elementtree.ElementTree.XMLTreeBuilder-class'>#</a>]</dt>
 <dd>
 <p>Element structure builder for XML source data, based on the
 <b>expat</b> parser.
@@ -905,13 +847,9 @@ Target object.  If omitted, the builder uses an
 <dd>
 Predefine HTML entities.  This flag is not supported
     by the current implementation.</dd>
-<dt><i>encoding=</i></dt>
-<dd>
-Optional encoding.  If given, the value overrides
-    the encoding specified in the XML file.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.XMLParser.close-method' name='elementtree.ElementTree.XMLParser.close-method'><b>close()</b></a> &rArr; Element [<a href='#elementtree.ElementTree.XMLParser.close-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.XMLTreeBuilder.close-method' name='elementtree.ElementTree.XMLTreeBuilder.close-method'><b>close()</b></a> &rArr; Element [<a href='#elementtree.ElementTree.XMLTreeBuilder.close-method'>#</a>]</dt>
 <dd>
 <p>Finishes feeding data to the parser.</p>
 <dl>
@@ -920,7 +858,22 @@ Optional encoding.  If given, the value overrides
 An element structure.</dd>
 </dl><br />
 </dd>
-<dt><a id='elementtree.ElementTree.XMLParser.feed-method' name='elementtree.ElementTree.XMLParser.feed-method'><b>feed(data)</b></a> [<a href='#elementtree.ElementTree.XMLParser.feed-method'>#</a>]</dt>
+<dt><a id='elementtree.ElementTree.XMLTreeBuilder.doctype-method' name='elementtree.ElementTree.XMLTreeBuilder.doctype-method'><b>doctype(name, pubid, system)</b></a> [<a href='#elementtree.ElementTree.XMLTreeBuilder.doctype-method'>#</a>]</dt>
+<dd>
+<p>Handles a doctype declaration.</p>
+<dl>
+<dt><i>name</i></dt>
+<dd>
+Doctype name.</dd>
+<dt><i>pubid</i></dt>
+<dd>
+Public identifier.</dd>
+<dt><i>system</i></dt>
+<dd>
+System identifier.</dd>
+</dl><br />
+</dd>
+<dt><a id='elementtree.ElementTree.XMLTreeBuilder.feed-method' name='elementtree.ElementTree.XMLTreeBuilder.feed-method'><b>feed(data)</b></a> [<a href='#elementtree.ElementTree.XMLTreeBuilder.feed-method'>#</a>]</dt>
 <dd>
 <p>Feeds data to the parser.</p>
 <dl>
