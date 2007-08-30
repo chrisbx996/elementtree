@@ -1,7 +1,32 @@
 The ElementTree Library
-$Id: CHANGES 2769 2006-07-05 20:14:58Z fredrik $
+$Id: CHANGES 3227 2007-08-27 22:21:41Z fredrik $
 
 *** Changes from release 1.2 to 1.3 ***
+
+- Raise ET.ParseError for XML errors found by the parser, no matter
+  that the error actually was.  ParseError is a subclass of Syntax-
+  Error, so code written for cElementTree still works.
+
+- Changed serializer to place all namespace declarations on the
+  root element.
+
+- Changed serializer to omits start and end tags for elements that
+  have the "tag" attribute set to None.
+
+- Fixed serialization of newlines in attribute values.
+
+- Added "target" and "version" attributes to the XMLParser class.
+
+- Added support for optional "doctype" hook to XMLParser.
+
+- Added future warnings for "if e" (use explicit len(e) or is None
+  test) and "e.getchildren()" (use list(e) or iteration).
+
+- Added future warnings for tree.find("/tag") and similar searches,
+  which are broken in 1.3 and earlier.
+
+- Removed old SgmlopXMLTreeBuilder.py, SimpleXMLTreeBuilder.py, and
+  XMLTreeBuilder.py modules.
 
 (1.3a1 released)
 
@@ -17,7 +42,8 @@ $Id: CHANGES 2769 2006-07-05 20:14:58Z fredrik $
 
 - (experimental) Added 'register_namespace' helper.  This can be used
   to register well-known prefixes for given namespace URI:s, for use
-  when serializing.
+  when serializing.  Note that the namespace mapping is a global
+  setting.
 
 - Renamed XMLTreeBuilder to XMLParser, as a first step in sorting
   out the TreeBuilder vs. TreeBuilder mess.  The old name is still
