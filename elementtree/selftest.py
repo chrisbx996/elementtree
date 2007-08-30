@@ -1,4 +1,4 @@
-# $Id: selftest.py 3227 2007-08-27 22:21:41Z fredrik $
+# $Id: selftest.py 3224 2007-08-27 21:23:39Z fredrik $
 # -*- coding: iso-8859-1 -*-
 # elementtree selftest program
 
@@ -9,7 +9,7 @@
 # TODO: add xml/html parsing tests
 # TODO: etc
 
-import sys, string, StringIO
+import sys, cStringIO
 
 from elementtree import ElementTree
 from elementtree import ElementPath
@@ -18,8 +18,8 @@ from elementtree import HTMLTreeBuilder
 from elementtree import SimpleXMLWriter
 
 def serialize(elem, encoding=None):
-    import StringIO
-    file = StringIO.StringIO()
+    import cStringIO
+    file = cStringIO.StringIO()
     tree = ElementTree.ElementTree(elem)
     if encoding:
         tree.write(file, encoding)
@@ -35,8 +35,8 @@ def summarize_list(seq):
 
 def normalize_crlf(tree):
     for elem in tree.getiterator():
-        if elem.text: elem.text = string.replace(elem.text, "\r\n", "\n")
-        if elem.tail: elem.tail = string.replace(elem.tail, "\r\n", "\n")
+        if elem.text: elem.text = elem.text.replace("\r\n", "\n")
+        if elem.tail: elem.tail = elem.tail.replace("\r\n", "\n")
 
 SAMPLE_XML = ElementTree.XML("""
 <body>
@@ -103,14 +103,16 @@ def sanity():
     >>> from elementtree.ElementInclude import *
     >>> from elementtree.ElementPath import *
     >>> from elementtree.HTMLTreeBuilder import *
+    >>> from elementtree.SimpleXMLTreeBuilder import *
     >>> from elementtree.SimpleXMLWriter import *
     >>> from elementtree.TidyTools import *
+    >>> from elementtree.XMLTreeBuilder import *
     """
 
 def version():
     """
     >>> ElementTree.VERSION
-    '1.3a2'
+    '1.2.7'
     """
 
 def interface():
@@ -121,28 +123,6 @@ def interface():
     >>> check_element(element)
     >>> tree = ElementTree.ElementTree(element)
     >>> check_element_tree(tree)
-    """
-
-def simpleops():
-    """
-    >>> elem = ElementTree.XML("<body><tag/></body>")
-    >>> serialize(elem)
-    '<body><tag /></body>'
-    >>> e = ElementTree.Element("tag2")
-    >>> elem.append(e)
-    >>> serialize(elem)
-    '<body><tag /><tag2 /></body>'
-    >>> elem.remove(e)
-    >>> serialize(elem)
-    '<body><tag /></body>'
-    >>> elem.insert(0, e)
-    >>> serialize(elem)
-    '<body><tag2 /><tag /></body>'
-    >>> elem.remove(e)
-    >>> elem.extend([e])
-    >>> serialize(elem)
-    '<body><tag /><tag2 /></body>'
-    >>> elem.remove(e)
     """
 
 def simplefind():
@@ -232,13 +212,9 @@ def find():
     ['tag', 'tag', 'tag']
     >>> summarize_list(elem.findall("././tag"))
     ['tag', 'tag']
-    >>> summarize_list(ElementTree.ElementTree(elem).findall("./tag"))
-    ['tag', 'tag']
-
-    FIXME: ET's Path module handles this case incorrectly; this gives
-    a warning in 1.3, and the behaviour will be modified in 1.4.
-
     >>> summarize_list(ElementTree.ElementTree(elem).findall("/tag"))
+    ['tag', 'tag']
+    >>> summarize_list(ElementTree.ElementTree(elem).findall("./tag"))
     ['tag', 'tag']
     """
 
@@ -301,13 +277,7 @@ def parseliteral():
     >>> element = ElementTree.fromstring("<html><body>text</body></html>")
     >>> ElementTree.ElementTree(element).write(sys.stdout)
     <html><body>text</body></html>
-    >>> sequence = ["<html><body>", "text</bo", "dy></html>"]
-    >>> element = ElementTree.fromstringlist(sequence)
-    >>> ElementTree.ElementTree(element).write(sys.stdout)
-    <html><body>text</body></html>
     >>> print ElementTree.tostring(element)
-    <html><body>text</body></html>
-    >>> print "".join(ElementTree.tostringlist(element))
     <html><body>text</body></html>
     >>> print ElementTree.tostring(element, "ascii")
     <?xml version='1.0' encoding='ascii'?>
@@ -320,6 +290,22 @@ def parseliteral():
     1
     >>> ids["body"].tag
     'body'
+    """
+
+def simpleparsefile():
+    """
+    Test the xmllib-based parser.
+
+    >>> from elementtree import SimpleXMLTreeBuilder
+    >>> parser = SimpleXMLTreeBuilder.TreeBuilder()
+    >>> tree = ElementTree.parse("samples/simple.xml", parser)
+    >>> normalize_crlf(tree)
+    >>> tree.write(sys.stdout)
+    <root>
+       <element key="value">text</element>
+       <element>text</element>tail
+       <empty-element />
+    </root>
     """
 
 def iterparse():
@@ -389,6 +375,40 @@ def iterparse():
 
     """
 
+def fancyparsefile():
+    """
+    Test the "fancy" parser.
+
+    Sanity check.
+    >>> from elementtree import XMLTreeBuilder
+    >>> parser = XMLTreeBuilder.FancyTreeBuilder()
+    >>> tree = ElementTree.parse("samples/simple.xml", parser)
+    >>> normalize_crlf(tree)
+    >>> tree.write(sys.stdout)
+    <root>
+       <element key="value">text</element>
+       <element>text</element>tail
+       <empty-element />
+    </root>
+
+    Callback check.
+    >>> class MyFancyParser(XMLTreeBuilder.FancyTreeBuilder):
+    ...     def start(self, elem):
+    ...         print "START", elem.tag
+    ...     def end(self, elem):
+    ...         print "END", elem.tag
+    >>> parser = MyFancyParser()
+    >>> tree = ElementTree.parse("samples/simple.xml", parser)
+    START root
+    START element
+    END element
+    START element
+    END element
+    START empty-element
+    END empty-element
+    END root
+    """
+
 def writefile():
     """
     >>> elem = ElementTree.Element("tag")
@@ -398,11 +418,6 @@ def writefile():
     >>> ElementTree.SubElement(elem, "subtag").text = "subtext"
     >>> serialize(elem)
     '<tag>text<subtag>subtext</subtag></tag>'
-
-    Test tag suppression
-    >>> elem.tag = None
-    >>> serialize(elem)
-    'text<subtag>subtext</subtag>'
     """
 
 def writestring():
@@ -473,6 +488,9 @@ def encoding():
     >>> serialize(elem, "iso-8859-1")
     '<?xml version=\'1.0\' encoding=\'iso-8859-1\'?>\n<tag key="\xe5\xf6\xf6&lt;&gt;" />'
 
+    >>> elem.attrib["key"] = u'foo\nbar'
+    >>> serialize(elem)
+    '<tag key="foo&#10;bar" />'
     """
 
 ENTITY_XML = """\
@@ -491,11 +509,11 @@ def entity():
 
     >>> ElementTree.XML("<document>&entity;</document>")
     Traceback (most recent call last):
-    ParseError: undefined entity: line 1, column 10
+    ExpatError: undefined entity: line 1, column 10
 
     >>> ElementTree.XML(ENTITY_XML)
     Traceback (most recent call last):
-    ParseError: undefined entity &entity;: line 5, column 10
+    ExpatError: undefined entity &entity;: line 5, column 10
 
     (add more tests here)
 
@@ -576,7 +594,7 @@ def qname():
     >>> elem.append(subelem)
     >>> elem.append(subelem)
     >>> serialize(elem) # 3.3
-    '<ns0:tag xmlns:ns0="uri" xmlns:ns1="uri1" xmlns:ns2="uri2"><tag ns1:key="ns2:value" /><tag ns1:key="ns2:value" /></ns0:tag>'
+    '<ns0:tag xmlns:ns0="uri"><tag ns1:key="ns2:value" xmlns:ns1="uri1" xmlns:ns2="uri2" /><tag ns1:key="ns2:value" xmlns:ns1="uri1" xmlns:ns2="uri2" /></ns0:tag>'
 
     """
 
@@ -781,7 +799,7 @@ def xinclude_default():
 
 def xmlwriter():
     r"""
-    >>> file = StringIO.StringIO()
+    >>> file = cStringIO.StringIO()
     >>> w = SimpleXMLWriter.XMLWriter(file)
     >>> html = w.start("html")
     >>> x = w.start("head")
@@ -979,35 +997,7 @@ def bug_xmltoolkit55():
 
     >>> e = ElementTree.XML("<!DOCTYPE doc SYSTEM 'doc.dtd'><doc>&ldots;&ndots;&rdots;</doc>")
     Traceback (most recent call last):
-    ParseError: undefined entity &ldots;: line 1, column 36
-    """
-
-def bug_200708_version():
-    """
-    >>> parser = ElementTree.XMLParser()
-    >>> parser.version
-    'Expat 2.0.0'
-    >>> parser.feed(open("samples/simple.xml").read())
-    >>> print serialize(parser.close())
-    <root>
-       <element key="value">text</element>
-       <element>text</element>tail
-       <empty-element />
-    </root>
-    """
-
-def bug_200708_newline():
-    r"""
-
-    Preserve newlines in attributes.
-    >>> ET = ElementTree
-    >>> e = ET.Element('SomeTag', text="def _f():\n  return 3\n")
-    >>> ET.tostring(e)
-    '<SomeTag text="def _f():&#10;  return 3&#10;" />'
-    >>> ET.XML(ET.tostring(e)).get("text")
-    'def _f():\n  return 3\n'
-    >>> ET.tostring(ET.XML(ET.tostring(e)))
-    '<SomeTag text="def _f():&#10;  return 3&#10;" />'
+    ExpatError: undefined entity &ldots;: line 1, column 36
     """
 
 # --------------------------------------------------------------------
